@@ -11,12 +11,13 @@ import java.util.List;
 @RestController
 public class PlayerController {
 
-    private final PlayerService playerService;
+    @Autowired
+    private PlayerService playerService;
 
     @Autowired
-    public PlayerController(PlayerService playerService){
-        this.playerService = playerService;
-    }
+    public PlayerController(){}//PlayerService playerService){
+        //this.playerService = playerService;
+
 
     @GetMapping("/players/list")
     public List<Player> getTest(){

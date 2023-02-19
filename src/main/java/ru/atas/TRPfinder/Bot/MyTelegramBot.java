@@ -1,32 +1,133 @@
 package ru.atas.TRPfinder.Bot;
 
+import ch.qos.logback.classic.PatternLayout;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
+import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.atas.TRPfinder.Entities.Player;
+import ru.atas.TRPfinder.Repositories.PlayerRepository;
+import ru.atas.TRPfinder.Services.PlayerService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class MyTelegramBot extends TelegramLongPollingBot {
 
+    @Autowired
+    private PlayerService playerService;
+
+    @PostConstruct
+    public void registerBot(){
+        try {
+            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
+            telegramBotsApi.registerBot(this);
+        } catch (TelegramApiException e) {
+            System.out.println(e);
+        }
+    }
+    public MyTelegramBot(){
+//        List<BotCommand> listOfCommands = new ArrayList<>();
+//        listOfCommands.add(new BotCommand("/start", "стартовое сообщение"));
+//        listOfCommands.add(new BotCommand("/getPlayers", "получить список игроков"));
+//
+//        try{
+//            this.execute(new SetMyCommands(listOfCommands, new BotCommandScopeDefault(), null));
+//        }
+//        catch (TelegramApiException e){
+//            System.out.println("ERROR! Ошибка назначения команд боту: " + e.getMessage());
+//        }
+    }
+
     @Override
     public void onUpdateReceived(Update update) {
-// We check if the update has a message and the message has text
+        // We check if the update has a message and the message has text
+
+
         if (update.hasMessage() && update.getMessage().hasText()) {
             SendMessage message = new SendMessage(); // Create a SendMessage object with mandatory fields
             message.setChatId(update.getMessage().getChatId().toString());
             //message.setText(update.getMessage().getText());
 
-            StringBuilder sb = new StringBuilder(update.getMessage().getText());
+            String messageText = update.getMessage().getText();
+            long chatId = update.getMessage().getChatId();
+            String firstName = update.getMessage().getChat().getFirstName();
+
+            StringBuilder sb;
+            sb = new StringBuilder(update.getMessage().getChat().getUserName() + ": " + messageText);
 
             System.out.println(sb.toString());
-            //message.setText("text");
+
+            switch (messageText){
+                case "/start":
+                    startCommand(chatId, firstName);
+                    break;
+                case "/getPlayers":
+                    getPlayersCommand(chatId);
+                    break;
+                default:
+                    sendDefaultMessage(chatId);
+            }
 
 //            try {
-//                execute(message); // Call method to send the message
+//                execute(message);
 //            } catch (TelegramApiException e) {
 //                e.printStackTrace();
 //            }
+        }
+    }
+
+    private void getPlayersCommand(long chatId) {
+        SendMessage message = new SendMessage();
+        List<Player> players = playerService.getPlayers().stream().toList();
+        StringBuilder text = new StringBuilder();
+
+        text.append("Список игроков:" + "\n\n");
+        for (int i = 0; i < players.size(); i++){
+            text.append("\t* Игрок" + " №" + (i+1) + ": "+ players.get(i).toString());
+            text.append("\n");
+        }
+        message.setChatId(chatId);
+        message.setText(text.toString());
+
+        executeMessage(message);
+    }
+
+    private void sendDefaultMessage(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText("Извините, я не знаю такой команды. :(\n\nПопробуйте написать команду из доступных.");
+        executeMessage(message);
+    }
+
+    private void startCommand(long chatId, String name) {
+        String answer = "Привет, " + name + "! Рады с тобой познакомится!!";
+        sendMessage(answer, chatId);
+    }
+
+    private void sendMessage(String answer, long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(answer);
+        executeMessage(message);
+    }
+
+    private void executeMessage(SendMessage message) {
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            //throw new RuntimeException(e);
+            System.out.println("ERROR! " + "Ошибка при отправке сообщения: " + e.getMessage());
         }
     }
 
