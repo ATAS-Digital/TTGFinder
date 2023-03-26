@@ -32,11 +32,15 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotToken() {
-        return "123";
+        // Вынесено в системные переменные
+        // BOT_TOKEN, TEST_BOT_TOKEN
+        return System.getenv("TEST_BOT_TOKEN");
     }
 
     @Override
     public String getBotUsername() {
-        return "123";
+        // Вынесено в системные переменные
+        //BOT_NAME, TEST_BOT_NAME
+        return System.getenv("TEST_BOT_NAME");
     }
 }
