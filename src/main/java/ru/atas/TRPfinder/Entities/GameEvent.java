@@ -5,7 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.sql.Date;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name="game_event")
@@ -14,7 +14,7 @@ public class GameEvent {
     @GeneratedValue
     Long id;
 
-    Date game_date;
+    ZonedDateTime game_date;
 
     String game_name;
 
@@ -22,7 +22,7 @@ public class GameEvent {
 
     public GameEvent(){}
 
-    public GameEvent(Long id, Date game_date, String game_name, String description){
+    public GameEvent(Long id, ZonedDateTime game_date, String game_name, String description){
         this.id = id;
         this.game_date = game_date;
         this.game_name = game_name;
@@ -33,7 +33,7 @@ public class GameEvent {
         return id;
     }
 
-    public Date getDate() {
+    public ZonedDateTime getDate() {
         return game_date;
     }
 
