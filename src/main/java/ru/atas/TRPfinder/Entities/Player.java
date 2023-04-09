@@ -31,23 +31,11 @@ public class Player {
         return id;
     }
 
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
-
     public String getName() {
         return player_name;
     }
 
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-
     public String getLogin() {
         return player_login;
     }
-
-//    public void setLogin(String login) {
-//        this.login = login;
-//    }
 }
