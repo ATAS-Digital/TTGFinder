@@ -1,8 +1,8 @@
-package ru.atas.TRPfinder.Requests;
+package ru.atas.TRPfinder.Records;
 
 import jakarta.validation.constraints.NotNull;
 
-public record PlayerRequest (
+public record PlayerRecord(
         @NotNull
         String name,
 

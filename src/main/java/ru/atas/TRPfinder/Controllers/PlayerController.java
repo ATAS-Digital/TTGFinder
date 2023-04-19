@@ -4,9 +4,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.atas.TRPfinder.Entities.Player;
-import ru.atas.TRPfinder.Requests.PlayerRequest;
+import ru.atas.TRPfinder.Records.PlayerRecord;
 import ru.atas.TRPfinder.Services.PlayerService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -33,12 +32,12 @@ public class PlayerController {
     }
 
     @PutMapping("/players/add")
-    public void addPlayer(@Valid @RequestBody PlayerRequest player){
+    public void addPlayer(@Valid @RequestBody PlayerRecord player){
         playerService.addPlayer(player);
     }
 
     @PostMapping("/players/update/{id}")
-    public void updatePlayer(@PathVariable Long id, @Valid @RequestBody PlayerRequest data){
+    public void updatePlayer(@PathVariable Long id, @Valid @RequestBody PlayerRecord data){
         var player = new Player(id, data.name(), data.login());
         playerService.updatePlayer(player);
     }
