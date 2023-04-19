@@ -38,4 +38,12 @@ public class EventRegistration {
     public Role getRole() {
         return Role.valueOf(role);
     }
+
+    public String getStringRole() {
+        return role;
+    }
+
+    public EventRegistrationId getId(){
+        return new EventRegistrationId(player_id, game_id);
+    }
 }

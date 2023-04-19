@@ -11,10 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.atas.TRPfinder.Entities.EventRegistration;
 import ru.atas.TRPfinder.Entities.EventRegistrationId;
 
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 
 
 public interface EventRegistrationRepository extends CrudRepository<EventRegistration, EventRegistrationId> {
-
+    @Transactional
+    @Modifying
+    @Query(value = "INSERT INTO EVENT_REGISTRATIONS VALUES (?1, ?2, ?3)", nativeQuery = true)
+    void addNewGame(Long playerId, Long gameId, String role);
 }
