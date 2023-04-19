@@ -1,16 +1,13 @@
 package ru.atas.TRPfinder.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
 @Table(name="player")
 public class Player {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
     private String player_name;
@@ -23,6 +20,11 @@ public class Player {
     @Autowired
     public Player(Long id, String player_name, String player_login){
         this.id = id;
+        this.player_name = player_name;
+        this.player_login = player_login;
+    }
+
+    public Player(String player_name, String player_login){
         this.player_name = player_name;
         this.player_login = player_login;
     }

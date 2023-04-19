@@ -1,10 +1,12 @@
 package ru.atas.TRPfinder.Entities;
 
 import jakarta.persistence.Id;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+@Component
 public class EventRegistrationId implements Serializable {
     private Long player_id;
     private Long game_id;
