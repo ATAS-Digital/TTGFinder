@@ -4,10 +4,10 @@ import jakarta.validation.constraints.NotNull;
 
 public record PlayerRecord(
         @NotNull
-        String name,
+        Long id,
 
         @NotNull
-        String login
+        String name
 
 ){
 }

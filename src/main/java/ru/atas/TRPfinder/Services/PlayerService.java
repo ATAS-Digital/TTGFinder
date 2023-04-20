@@ -7,6 +7,7 @@ import ru.atas.TRPfinder.Repositories.PlayerRepository;
 import ru.atas.TRPfinder.Records.PlayerRecord;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -29,8 +30,14 @@ public class PlayerService {
         return a.get();
     }
 
-    public void addPlayer(PlayerRecord player){
-        playerRepository.addNewPlayer(player.name(), player.login());
+    public boolean addPlayer(PlayerRecord player){
+        if (getPlayers()
+                .stream()
+                .noneMatch(x -> player.id().equals(x.getId()))){
+            playerRepository.save(new Player(player.id(), player.name()));
+            return true;
+        }
+        return false;
     }
 
     public void updatePlayer(Player player){

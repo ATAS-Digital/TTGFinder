@@ -38,7 +38,7 @@ public class PlayerController {
 
     @PostMapping("/players/update/{id}")
     public void updatePlayer(@PathVariable Long id, @Valid @RequestBody PlayerRecord data){
-        var player = new Player(id, data.name(), data.login());
+        var player = new Player(id, data.name());
         playerService.updatePlayer(player);
     }
 

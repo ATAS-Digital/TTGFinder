@@ -10,9 +10,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.atas.TRPfinder.Entities.Player;
+import ru.atas.TRPfinder.Records.PlayerRecord;
 import ru.atas.TRPfinder.Services.PlayerService;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class MyTelegramBot extends TelegramLongPollingBot {
@@ -21,7 +23,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     private PlayerService playerService;
 
     @PostConstruct
-    public void registerBot(){
+    public void registerBot() {
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
             telegramBotsApi.registerBot(this);
@@ -43,17 +45,54 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
             System.out.println(sb.toString());
 
-            switch (messageText){
+            switch (messageText) {
                 case "/start":
                     startCommand(chatId, firstName);
                     break;
-                case "/getPlayers":
+                case "/players":
                     getPlayersCommand(chatId);
+                    break;
+                case "/login":
+                    getLogin(update, chatId);
+                    break;
+                case "/profile":
+                    getUserData(chatId);
                     break;
                 default:
                     sendDefaultMessage(chatId);
             }
         }
+    }
+
+    private void getUserData(long chatId) {
+        var player = playerService.getPlayerById(chatId);
+
+        String text = "Ваши данные:" + "\n\n" +
+                "name: " + player.getName() + "\n" +
+                "id: " + player.getId();
+
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(text);
+        executeMessage(message);
+    }
+
+    private void getLogin(Update update, long chatId) {
+        String name =update.getMessage().getChat().getFirstName();
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+
+        var playerRecord = new PlayerRecord(
+                chatId,
+                name);
+
+        if (playerService.addPlayer(playerRecord)) {
+            message.setText("Вы успешно зарегистрированы. Ваш никнейм: " + name);
+        }
+        else {
+            message.setText("Вы уже зарегистрированы под никнеймом: " + name);
+        }
+        executeMessage(message);
     }
 
     private void getPlayersCommand(long chatId) {
@@ -62,8 +101,8 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         StringBuilder text = new StringBuilder();
 
         text.append("Список игроков:" + "\n\n");
-        for (int i = 0; i < players.size(); i++){
-            text.append("\t* Игрок" + " №" + (i+1) + ": "+ players.get(i).toString());
+        for (int i = 0; i < players.size(); i++) {
+            text.append("\t* Игрок" + " №" + (i + 1) + ": " + players.get(i).toString());
             text.append("\n");
         }
         message.setChatId(chatId);
@@ -103,13 +142,13 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     public String getBotToken() {
         // Вынесено в системные переменные
         // BOT_TOKEN, TEST_BOT_TOKEN
-        return System.getenv("TEST_BOT_TOKEN");
+        return System.getenv("BOT_TOKEN");
     }
 
     @Override
     public String getBotUsername() {
         // Вынесено в системные переменные
         //BOT_NAME, TEST_BOT_NAME
-        return System.getenv("TEST_BOT_NAME");
+        return System.getenv("BOT_NAME");
     }
 }
