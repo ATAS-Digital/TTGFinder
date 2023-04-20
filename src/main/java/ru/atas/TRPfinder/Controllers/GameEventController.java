@@ -38,7 +38,7 @@ public class GameEventController {
 
     @PostMapping("/games/update/{id}")
     public void updateGameEvent(@PathVariable Long id, @Valid @RequestBody GameEventRecord data){
-        var game = new GameEvent(id, data.date(), data.name(), data.description());
+        var game = new GameEvent(id, data.date(), data.name(), data.place(), data.description());
         gameEventService.updateGame(game);
     }
 

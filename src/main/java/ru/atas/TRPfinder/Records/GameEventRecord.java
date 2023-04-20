@@ -11,6 +11,9 @@ public record GameEventRecord (
         @NotNull
         String name,
 
+        @NotNull
+        String place,
+
         String description
 ){
 }

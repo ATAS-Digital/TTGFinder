@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
 public interface GameEventRepository extends CrudRepository<GameEvent, Long> {
     @Transactional
     @Modifying
-    @Query(value = "INSERT INTO GAME_EVENT (GAME_DATE, GAME_NAME, DESCRIPTION) \n"+
-    "VALUES (?1, ?2, ?3)", nativeQuery = true)
-    void addNewGame(ZonedDateTime time, String name, String description);
+    @Query(value = "INSERT INTO GAME_EVENT (GAME_DATE, GAME_NAME, GAME_PLACE, DESCRIPTION) \n"+
+    "VALUES (?1, ?2, ?3, ?4)", nativeQuery = true)
+    void addNewGame(ZonedDateTime time, String name, String place, String description);
 }

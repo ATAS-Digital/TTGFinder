@@ -10,9 +10,9 @@ import ru.atas.TRPfinder.Entities.Player;
 
 @Repository
 public interface PlayerRepository extends CrudRepository<Player, Long> {
-    @Transactional
-    @Modifying
-    @Query(value = "INSERT INTO PLAYER (PLAYER_NAME, PLAYER_LOGIN)\n" +
-            "VALUES (?1, ?2)", nativeQuery = true)
-    void addNewPlayer(String name, String login);
+//    @Transactional
+//    @Modifying
+//    @Query(value = "INSERT INTO PLAYER (ID, PLAYER_LOGIN)\n" +
+//            "VALUES (?1, ?2)", nativeQuery = true)
+//    void addNewPlayer(String name, String login);
 }

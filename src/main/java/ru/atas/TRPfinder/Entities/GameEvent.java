@@ -18,15 +18,18 @@ public class GameEvent {
 
     String game_name;
 
+    String game_place;
+
     String description;
 
     public GameEvent(){}
 
-    public GameEvent(Long id, ZonedDateTime game_date, String game_name, String description){
+    public GameEvent(Long id, ZonedDateTime game_date, String game_name, String game_place, String description){
         this.id = id;
         this.game_date = game_date;
         this.game_name = game_name;
         this.description = description;
+        this.game_place =  game_place;
     }
 
     public Long getId() {
@@ -40,6 +43,8 @@ public class GameEvent {
     public String getName() {
         return game_name;
     }
+
+    public String getGamePlace() {return game_place;}
 
     public String getDescription() {
         return description;

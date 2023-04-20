@@ -29,7 +29,7 @@ public class GameEventService {
     }
 
     public void addNewGame(GameEventRecord game){
-        gameEventRepository.addNewGame(game.date(), game.name(), game.description());
+        gameEventRepository.addNewGame(game.date(), game.name(), game.place(), game.description());
     }
 
     public void updateGame(GameEvent game){
