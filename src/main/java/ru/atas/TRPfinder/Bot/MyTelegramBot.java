@@ -14,6 +14,7 @@ import ru.atas.TRPfinder.Records.PlayerRecord;
 import ru.atas.TRPfinder.Services.PlayerService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Component
@@ -65,11 +66,17 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     }
 
     private void getUserData(long chatId) {
-        var player = playerService.getPlayerById(chatId);
-
-        String text = "Ваши данные:" + "\n\n" +
-                "name: " + player.getName() + "\n" +
-                "id: " + player.getId();
+        String text;
+        try{
+            var player = playerService.getPlayerById(chatId);
+            text = "Ваши данные:" + "\n\n" +
+                    "name: " + player.getName() + "\n" +
+                    "id: " + player.getId();
+        }
+        catch (NoSuchElementException e){
+            System.out.println("ERROR!! Запись не найдена в БД: " + e.getMessage());
+            text = "Вы ещё не зарегистрировались :)";
+        }
 
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
