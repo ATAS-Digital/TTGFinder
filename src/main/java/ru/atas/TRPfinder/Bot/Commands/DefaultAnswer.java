@@ -3,7 +3,7 @@ package ru.atas.TRPfinder.Bot.Commands;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import ru.atas.TRPfinder.Bot.CommandInterface;
+import ru.atas.TRPfinder.Bot.Interfaces.CommandInterface;
 
 @Component
 public class DefaultAnswer implements CommandInterface {
