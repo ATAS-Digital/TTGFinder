@@ -28,8 +28,14 @@ public class GameEventService {
         return gameEventRepository.findById(id).get();
     }
 
-    public void addNewGame(GameEventRecord game){
-        gameEventRepository.addNewGame(game.date(), game.name(), game.place(), game.description());
+    public boolean addNewGame(GameEventRecord game){
+        if (getAllGames()
+                .stream()
+                .noneMatch(x -> game.name().equals(x.getName()))) {
+            gameEventRepository.addNewGame(game.date(), game.name(), game.place(), game.description());
+            return true;
+        }
+        return false;
     }
 
     public void updateGame(GameEvent game){
