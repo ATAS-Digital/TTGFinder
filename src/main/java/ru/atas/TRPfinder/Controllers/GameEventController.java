@@ -31,6 +31,11 @@ public class GameEventController {
         return gameEventService.getGameById(id);
     }
 
+    @GetMapping("/games/getByName/{name}")
+    public GameEvent getGameById(@PathVariable String name){
+        return gameEventService.getGameByName(name);
+    }
+
     @PutMapping("/games/add")
     public void addGameEvent(@Valid @RequestBody GameEventRecord game){
         gameEventService.addNewGame(game);

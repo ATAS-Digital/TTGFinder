@@ -28,6 +28,9 @@ public class GameEventService {
         return gameEventRepository.findById(id).get();
     }
 
+    public GameEvent getGameByName(String name){
+        return gameEventRepository.getGameByName(name);
+    }
     public void addNewGame(GameEventRecord game){
         gameEventRepository.addNewGame(game.date(), game.name(), game.place(), game.description());
     }
