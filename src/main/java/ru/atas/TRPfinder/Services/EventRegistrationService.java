@@ -30,6 +30,10 @@ public class EventRegistrationService{
                 .toList();
     }
 
+    public List<EventRegistration> getRegistrationsOnGame(Long gameId){
+        return eventRegistrationRepository.GetGameRegistrations(gameId);
+    }
+
     public List<Role> getAllRoles(){
         return StreamSupport
                 .stream(eventRegistrationRepository.findAll().spliterator(), false)

@@ -26,6 +26,11 @@ public class GameEventController {
         return gameEventService.getAllGames();
     }
 
+    @GetMapping("/games/{gameId}/master")
+    public String getMaster(@PathVariable Long gameId){
+        return gameEventService.getMasterName(gameId);
+    }
+
     @GetMapping("/games/{id}")
     public GameEvent getGameById(@PathVariable Long id){
         return gameEventService.getGameById(id);
