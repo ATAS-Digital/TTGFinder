@@ -21,4 +21,9 @@ public interface EventRegistrationRepository extends CrudRepository<EventRegistr
     @Modifying
     @Query(value = "INSERT INTO EVENT_REGISTRATIONS VALUES (?1, ?2, ?3)", nativeQuery = true)
     void addNewGame(Long playerId, Long gameId, String role);
+
+    @Transactional
+    @Query(value = "SELECT * FROM EVENT_REGISTRATIONS\n" +
+            "WHERE game_id = (?1)", nativeQuery = true)
+    List<EventRegistration> GetGameRegistrations(Long gameId);
 }
