@@ -2,6 +2,7 @@ package ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -25,7 +26,7 @@ public class AllGamesCallback implements EventCallbackInterface {
     List<List<InlineKeyboardButton>> rowsInLine;
     List<InlineKeyboardButton> bottomRowsInLine;
     StringBuilder builder;
-    int lastIndexOfIterations;
+    private static int lastIndexOfIterations;
 
     private final GameEventService gameEventService;
 
@@ -149,17 +150,18 @@ public class AllGamesCallback implements EventCallbackInterface {
         }
         else {
             for(int i = 0; i < additionalIterations; i++){
+                index = lastIndexOfIterations + i;
                 builder.append(String.format("""
                     %s
                     [ %s ]
                     "%s"\n
-                    """, gamesList.get(i).getName(), gamesList.get(i).getDate()
+                    """, gamesList.get(index).getName(), gamesList.get(index).getDate()
                                 .format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
-                        gamesList.get(i).getDescription()));
+                        gamesList.get(index).getDescription()));
 
                 var gameButton = new InlineKeyboardButton();
-                gameButton.setText(gamesList.get(i).getName());
-                gameButton.setCallbackData(String.format("game%s", gamesList.get(i).getId()));
+                gameButton.setText(gamesList.get(index).getName());
+                gameButton.setCallbackData(String.format("game%s", gamesList.get(index).getId()));
                 List<InlineKeyboardButton> rowInLine = new ArrayList<>();
                 rowInLine.add(gameButton);
                 rowsInLine.add(rowInLine);
@@ -259,6 +261,7 @@ public class AllGamesCallback implements EventCallbackInterface {
             }
             message.setText(builder.toString());
         }
+
         if (iterations - 1 > 0 || additionalIterations > 0) {
             var nextButton = new InlineKeyboardButton();
             nextButton.setText("[дальше]");
@@ -271,5 +274,10 @@ public class AllGamesCallback implements EventCallbackInterface {
         message.setReplyMarkup(keyboard);
 
         return message;
+    }
+
+    @Override
+    public DeleteMessage deleteMessage(Update update) {
+        return null;
     }
 }

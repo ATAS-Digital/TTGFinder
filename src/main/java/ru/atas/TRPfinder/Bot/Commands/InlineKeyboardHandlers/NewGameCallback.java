@@ -2,15 +2,16 @@ package ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.atas.TRPfinder.Bot.Interfaces.EventCallbackInterface;
 
 @Component
 public class NewGameCallback implements EventCallbackInterface {
+
     @Override
-    public EditMessageText getMessage(Update update/*, long messageId, long chatId*/) {
-        //int messageId = update.getCallbackQuery().getMessage().getMessageId();
+    public EditMessageText editMessage(Update update) {
         return null;
     }
 
@@ -36,5 +37,10 @@ public class NewGameCallback implements EventCallbackInterface {
         message.setText(answer);
 
         return message;
+    }
+
+    @Override
+    public DeleteMessage deleteMessage(Update update) {
+        return null;
     }
 }

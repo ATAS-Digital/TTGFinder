@@ -6,12 +6,14 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.atas.TRPfinder.Bot.Commands.*;
 import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.AllGamesCallback;
+import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.GameInfoCallback;
 import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.NewGameCallback;
 import ru.atas.TRPfinder.Bot.Interfaces.CommandInterface;
 import ru.atas.TRPfinder.Bot.Interfaces.EventCallbackInterface;
@@ -37,11 +39,14 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     private HashMap<String, EventCallbackInterface> eventMenuButtons;
     private HashMap<String, EventCallbackInterface> secondStageButtons;
 
+    TelegramBotsApi botApi;
+
     private boolean newGamePressed;
+    //private boolean gameSelectedForTheFirstTime;
 
     @PostConstruct
     public void registerBot() {
-        TelegramBotsApi botApi;
+//        TelegramBotsApi botApi;
         try {
             botApi = new TelegramBotsApi(DefaultBotSession.class);
             botApi.registerBot(this);
@@ -50,6 +55,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         }
 
         newGamePressed = false;
+        //gameSelectedForTheFirstTime = false;
 
         commandInterfaceMap = new HashMap<>();
         commandInterfaceMap.put("other", new DefaultAnswer());
@@ -66,6 +72,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         secondStageButtons = new HashMap<>();
         secondStageButtons.put("prev", new AllGamesCallback(gameEventService));
         secondStageButtons.put("next", new AllGamesCallback(gameEventService));
+        secondStageButtons.put("game", new GameInfoCallback(gameEventService));
     }
 
     @Override
@@ -96,7 +103,22 @@ public class MyTelegramBot extends TelegramLongPollingBot {
                 if (callData.equals("newGame")) newGamePressed = true;
             }
             else if (secondStageButtons.containsKey(callData))
-                executeEditMessage(secondStageButtons.get(callData).getMessage(update));
+                executeEditMessage(secondStageButtons.get(callData).editMessage(update));
+            else if (callData.equals("close")) {
+                deleteMessage(secondStageButtons.get("game").deleteMessage(update));
+                //gameSelectedForTheFirstTime = false;
+            }
+            else if(callData.contains("game")) {
+                executeMessage(secondStageButtons.get("game").sendMessage(update));
+//                if(!gameSelectedForTheFirstTime) {
+//                    executeMessage(secondStageButtons.get("game").sendMessage(update));
+//                    //executeEditMessage(secondStageButtons.get("game").editMessage(update));
+//                    gameSelectedForTheFirstTime = true;
+//                }
+//                else {
+//                    executeEditMessage(secondStageButtons.get("game").editMessage(update));
+//                }
+            }
         }
     }
 
@@ -112,6 +134,14 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         try {
             execute(message);
         } catch (TelegramApiException e) {
+            System.out.println("ERROR! " + "Ошибка при отправке сообщения: " + e.getMessage());
+        }
+    }
+
+    public void deleteMessage(DeleteMessage message){
+        try {
+            execute(message);
+        } catch (TelegramApiException e){
             System.out.println("ERROR! " + "Ошибка при отправке сообщения: " + e.getMessage());
         }
     }
