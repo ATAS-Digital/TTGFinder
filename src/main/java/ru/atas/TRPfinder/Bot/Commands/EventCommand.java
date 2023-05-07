@@ -15,8 +15,6 @@ public class EventCommand implements CommandInterface {
 
     @Override
     public SendMessage doAction(Update update) {
-        //String callbackData = update.getCallbackQuery().getData();
-        //long messageId = update.getCallbackQuery().getMessage().getMessageId();
         var message = new SendMessage();
         long chatId = update.getMessage().getChatId();
         message.setChatId(chatId);
@@ -44,6 +42,7 @@ public class EventCommand implements CommandInterface {
 
         rowsInLine.add(firstRowInLine);
 
+        // сохранил это как backup
 //        var createdGames = new InlineKeyboardButton();
 //        createdGames.setText("Созданные игры");
 //        createdGames.setCallbackData("createdGames");
@@ -61,12 +60,4 @@ public class EventCommand implements CommandInterface {
 
         return keyboardMarkup;
     }
-
-//    private void executeMessage(SendMessage message) {
-//        try {
-//            execute(message);
-//        } catch (TelegramApiException e) {
-//            System.out.println("ERROR! " + "Ошибка при отправке сообщения: " + e.getMessage());
-//        }
-//    }
 }
