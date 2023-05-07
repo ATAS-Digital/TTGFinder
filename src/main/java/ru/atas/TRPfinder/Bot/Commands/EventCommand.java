@@ -38,19 +38,20 @@ public class EventCommand implements CommandInterface {
         firstRowInLine.add(newGame);
 
         var seeGames = new InlineKeyboardButton();
-        seeGames.setText("Общий список игр");
+        seeGames.setText("Список игр");
         seeGames.setCallbackData("seeGames");
         firstRowInLine.add(seeGames);
 
         rowsInLine.add(firstRowInLine);
 
-        var createdGames = new InlineKeyboardButton();
-        createdGames.setText("Созданные игры");
-        createdGames.setCallbackData("createdGames");
-        secondRowInLine.add(createdGames);
+//        var createdGames = new InlineKeyboardButton();
+//        createdGames.setText("Созданные игры");
+//        createdGames.setCallbackData("createdGames");
+//        secondRowInLine.add(createdGames);
 
         var myGames = new InlineKeyboardButton();
-        myGames.setText("Запланированные игры");
+        //myGames.setText("Запланированные игры");
+        myGames.setText("Мои игры");
         myGames.setCallbackData("myGames");
         secondRowInLine.add(myGames);
 

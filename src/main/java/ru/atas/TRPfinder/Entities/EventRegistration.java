@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
+
 @Entity
 @Table(name="event_registrations")
 @IdClass(EventRegistrationId.class)
