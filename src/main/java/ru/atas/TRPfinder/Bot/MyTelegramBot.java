@@ -90,6 +90,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         }
         else if (update.hasCallbackQuery()) {
             String callData = update.getCallbackQuery().getData();
+            System.out.println(update.getCallbackQuery().getMessage().getChat().getUserName() + " (callback): " + callData);
             if (eventMenuButtons.containsKey(callData)) {
                 executeMessage(eventMenuButtons.get(callData).sendMessage(update));
                 if (callData.equals("newGame")) newGamePressed = true;

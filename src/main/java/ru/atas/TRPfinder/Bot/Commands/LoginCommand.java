@@ -21,18 +21,24 @@ public class LoginCommand implements CommandInterface {
     @Override
     public SendMessage doAction(Update update) {
         long chatId = update.getMessage().getChatId();
-        String name = update.getMessage().getChat().getFirstName();
+        String name = update.getMessage().getChat().getUserName();
         var message = new SendMessage();
         message.setChatId(chatId);
 
-        var playerRecord = new PlayerRecord(
-                chatId,
-                name);
+        if (name == null){
+            message.setText("У вас отсутствует имя пользователя Telegram.\n" +
+                    "Задайте себе имя пользователя и повторите операцию");
+        }
+        else {
+            var playerRecord = new PlayerRecord(
+                    chatId,
+                    name);
 
-        if (playerService.addPlayer(playerRecord)) {
-            message.setText("Вы успешно зарегистрированы. Ваш никнейм: " + name);
-        } else {
-            message.setText("Вы уже зарегистрированы под никнеймом: " + name);
+            if (playerService.addPlayer(playerRecord)) {
+                message.setText("Вы успешно зарегистрированы. Ваш никнейм: " + name);
+            } else {
+                message.setText("Вы уже зарегистрированы под никнеймом: " + name);
+            }
         }
         return message;
     }

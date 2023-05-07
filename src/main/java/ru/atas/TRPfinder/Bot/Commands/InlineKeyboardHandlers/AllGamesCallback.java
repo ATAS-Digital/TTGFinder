@@ -23,7 +23,6 @@ public class AllGamesCallback implements EventCallbackInterface {
 
     public AllGamesCallback(GameEventService gameEventService){
         this.gameEventService = gameEventService;
-        gamesList = gameEventService.getAllGames();
     }
 
     @Override
@@ -43,6 +42,7 @@ public class AllGamesCallback implements EventCallbackInterface {
         size = gameEventService.getAllGames().size();
         iterations = size / 5;
         additionalIterations = size % 5;
+        gamesList = gameEventService.getAllGames();
 
         SendMessage message = new SendMessage();
         message.setChatId(update.getCallbackQuery().getMessage().getChatId());
@@ -61,27 +61,6 @@ public class AllGamesCallback implements EventCallbackInterface {
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z")),
                         gameEventService.getMasterName(gamesList.get(i).getId())));
             }
-//
-//
-//            builder.append(String.format("""
-//                    %s
-//                    [%s]\n
-//                    """, gamesList.get(1).getName(), gamesList.get(1).getDate().toString()));
-//
-//            builder.append(String.format("""
-//                    %s
-//                    [%s]\n
-//                    """, gamesList.get(2).getName(), gamesList.get(2).getDate().toString()));
-//
-//            builder.append(String.format("""
-//                    %s
-//                    [%s]\n
-//                    """, gamesList.get(3).getName(), gamesList.get(3).getDate().toString()));
-//
-//            builder.append(String.format("""
-//                    %s
-//                    [%s]\n
-//                    """, gamesList.get(4).getName(), gamesList.get(4).getDate().toString()));
             message.setText(builder.toString());
         }
         else{
@@ -89,7 +68,7 @@ public class AllGamesCallback implements EventCallbackInterface {
                 builder.append(String.format("""
                     %s
                     [ %s ]
-                    %s\n
+                    Мастер: @%s\n
                     """, gamesList.get(i).getName(), gamesList.get(i).getDate()
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm z")),
                         gameEventService.getMasterName(gamesList.get(i).getId())));
