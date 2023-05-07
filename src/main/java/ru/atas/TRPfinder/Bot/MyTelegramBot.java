@@ -11,9 +11,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.atas.TRPfinder.Bot.Commands.*;
-import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.NewGameCommand;
+import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.AllGamesCallback;
+import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.NewGameCallback;
 import ru.atas.TRPfinder.Bot.Interfaces.CommandInterface;
 import ru.atas.TRPfinder.Bot.Interfaces.EventCallbackInterface;
+import ru.atas.TRPfinder.Services.EventRegistrationService;
 import ru.atas.TRPfinder.Services.GameEventService;
 import ru.atas.TRPfinder.Services.PlayerService;
 
@@ -28,9 +30,14 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     @Autowired
     private GameEventService gameEventService;
 
-    private HashMap<String, CommandInterface> commandInterfaceMap;
+    @Autowired
+    private EventRegistrationService eventRegistrationService;
 
-    private HashMap<String, EventCallbackInterface> callbackButtonsMap;
+    private HashMap<String, CommandInterface> commandInterfaceMap;
+    private HashMap<String, EventCallbackInterface> eventMenuButtons;
+    private HashMap<String, EventCallbackInterface> secondStageButtons;
+
+    private boolean newGamePressed;
 
     @PostConstruct
     public void registerBot() {
@@ -39,8 +46,10 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             botApi = new TelegramBotsApi(DefaultBotSession.class);
             botApi.registerBot(this);
         } catch (TelegramApiException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage()+"\n---------\n");
         }
+
+        newGamePressed = false;
 
         commandInterfaceMap = new HashMap<>();
         commandInterfaceMap.put("other", new DefaultAnswer());
@@ -48,14 +57,16 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         commandInterfaceMap.put("/login", new LoginCommand(playerService));
         commandInterfaceMap.put("/profile", new ProfileCommand(playerService));
         commandInterfaceMap.put("/events", new EventCommand());
-        commandInterfaceMap.put("getTimeData", new TimeData(gameEventService));
+        commandInterfaceMap.put("getTimeData", new TimeData(gameEventService, eventRegistrationService, playerService));
 
-        callbackButtonsMap = new HashMap<>();
-        callbackButtonsMap.put("newGame", new NewGameCommand());
+        eventMenuButtons = new HashMap<>();
+        eventMenuButtons.put("newGame", new NewGameCallback());
+        eventMenuButtons.put("seeGames", new AllGamesCallback(gameEventService));
 
+        secondStageButtons = new HashMap<>();
+        secondStageButtons.put("prev", new AllGamesCallback(gameEventService));
+        secondStageButtons.put("next", new AllGamesCallback(gameEventService));
     }
-
-
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -68,8 +79,9 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             if (commandInterfaceMap.containsKey(messageText)) {
                 executeMessage(commandInterfaceMap.get(messageText).doAction(update));
             }
-            else if (update.getMessage().getText().contains("UTC")){
+            else if (update.getMessage().getText().contains("UTC") && newGamePressed){
                 executeMessage(commandInterfaceMap.get("getTimeData").doAction(update));
+                newGamePressed = false;
             }
             else {
                 executeMessage(commandInterfaceMap.get("other").doAction(update));
@@ -78,7 +90,12 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         }
         else if (update.hasCallbackQuery()) {
             String callData = update.getCallbackQuery().getData();
-            executeEditMessage(callbackButtonsMap.get(callData).getMessage(update));
+            if (eventMenuButtons.containsKey(callData)) {
+                executeMessage(eventMenuButtons.get(callData).sendMessage(update));
+                if (callData.equals("newGame")) newGamePressed = true;
+            }
+            else if (secondStageButtons.containsKey(callData))
+                executeEditMessage(secondStageButtons.get(callData).getMessage(update));
         }
     }
 

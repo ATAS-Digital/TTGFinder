@@ -1,23 +1,22 @@
 package ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.atas.TRPfinder.Bot.Interfaces.EventCallbackInterface;
-import ru.atas.TRPfinder.Services.GameEventService;
 
 @Component
-public class NewGameCommand implements EventCallbackInterface {
-
+public class NewGameCallback implements EventCallbackInterface {
     @Override
-    public void HandleButton() {
-
+    public EditMessageText getMessage(Update update/*, long messageId, long chatId*/) {
+        //int messageId = update.getCallbackQuery().getMessage().getMessageId();
+        return null;
     }
 
     @Override
-    public EditMessageText getMessage(Update update/*, long messageId, long chatId*/) {
-        int messageId = update.getCallbackQuery().getMessage().getMessageId();
+    public SendMessage sendMessage(Update update) {
+
         long chatId = update.getCallbackQuery().getMessage().getChatId();
 
         String answer = """
@@ -31,11 +30,11 @@ public class NewGameCommand implements EventCallbackInterface {
 
                 Обратите внимание на то, что заголовки писать не нужно""";
 
-        EditMessageText newMessage = new EditMessageText();
-        newMessage.setChatId(chatId);
-        newMessage.setMessageId(messageId);
-        newMessage.setText(answer);
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        //newMessage.setMessageId(messageId);
+        message.setText(answer);
 
-        return newMessage;
+        return message;
     }
 }

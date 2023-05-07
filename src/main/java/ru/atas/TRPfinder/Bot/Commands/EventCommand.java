@@ -8,7 +8,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import ru.atas.TRPfinder.Bot.Interfaces.CommandInterface;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Component
@@ -40,7 +39,7 @@ public class EventCommand implements CommandInterface {
 
         var seeGames = new InlineKeyboardButton();
         seeGames.setText("Общий список игр");
-        seeGames.setCallbackData("seeGame");
+        seeGames.setCallbackData("seeGames");
         firstRowInLine.add(seeGames);
 
         rowsInLine.add(firstRowInLine);
