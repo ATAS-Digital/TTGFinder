@@ -45,7 +45,6 @@ public class GameEventService {
         return gameEventRepository.findById(id).get();
     }
 
-
     public boolean addNewGame(GameEventRecord game) {
         if (getAllGames()
                 .stream()
@@ -59,8 +58,6 @@ public class GameEventService {
     public GameEvent getGameByName(String name){
         return gameEventRepository.getGameByName(name);
     }
-    public void addNewGame(GameEventRecord game){
-        gameEventRepository.addNewGame(game.date(), game.name(), game.place(), game.description());
 
     public void updateGame(GameEvent game){
         gameEventRepository.save(game);
