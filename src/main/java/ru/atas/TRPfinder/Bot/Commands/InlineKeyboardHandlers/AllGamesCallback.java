@@ -36,8 +36,8 @@ public class AllGamesCallback implements EventCallbackInterface {
         lastIndexOfIterations = 0;
     }
 
-    private EditMessageText editMessagePREV(Update update) {
-        gamesList = gameEventService.getAllGames();
+    private EditMessageText editMessagePREV(Update update, List<GameEvent> gamesList) {
+        //gamesList = gameEventService.getAllGames();
         size = gamesList.size();
         iterations = size / 5;
         additionalIterations = size % 5;
@@ -71,7 +71,7 @@ public class AllGamesCallback implements EventCallbackInterface {
             }
             editedMessage.setText(builder.toString());
             iterations -= 1;
-            lastIndexOfIterations = 4;
+            lastIndexOfIterations = 5;
         }
         else{
             for(int i = 0; i < size; i++){
@@ -112,8 +112,8 @@ public class AllGamesCallback implements EventCallbackInterface {
         return editedMessage;
     }
 
-    private EditMessageText editMessageNEXT(Update update) {
-        gamesList = gameEventService.getAllGames();
+    private EditMessageText editMessageNEXT(Update update, List<GameEvent> gamesList) {
+        //gamesList = gameEventService.getAllGames();
         int size = gamesList.size();
         additionalIterations = size % 5;
         rowsInLine = new ArrayList<>();
@@ -166,8 +166,9 @@ public class AllGamesCallback implements EventCallbackInterface {
                 rowInLine.add(gameButton);
                 rowsInLine.add(rowInLine);
 
-                additionalIterations -= 1;
+
             }
+            additionalIterations = 0;
             editedMessage.setText(builder.toString());
         }
 
@@ -194,10 +195,10 @@ public class AllGamesCallback implements EventCallbackInterface {
     public EditMessageText editMessage(Update update) {
         EditMessageText editedMessage;
         if (update.getCallbackQuery().getData().equals("next")){
-                return editMessageNEXT(update);
+                return editMessageNEXT(update, gameEventService.getAllGames());
         }
         else
-            editedMessage = editMessagePREV(update);
+            editedMessage = editMessagePREV(update, gameEventService.getAllGames());
 
         return editedMessage;
     }

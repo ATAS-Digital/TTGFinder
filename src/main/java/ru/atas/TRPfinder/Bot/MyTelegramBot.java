@@ -60,6 +60,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
         commandInterfaceMap = new HashMap<>();
         commandInterfaceMap.put("other", new DefaultAnswer());
+        //commandInterfaceMap.put("otherCallback", new DefaultAnswer());
         commandInterfaceMap.put("/start", new StartCommand());
         commandInterfaceMap.put("/login", new LoginCommand(playerService));
         commandInterfaceMap.put("/profile", new ProfileCommand(playerService));

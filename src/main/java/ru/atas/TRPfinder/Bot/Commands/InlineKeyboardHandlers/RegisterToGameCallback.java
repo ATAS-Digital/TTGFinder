@@ -55,13 +55,16 @@ public class RegisterToGameCallback implements EventCallbackInterface {
         {
             if (gameEventService.getMasterName(gameID).equals(
                     update.getCallbackQuery().getMessage().getChat().getUserName())){
-                message.setText("Вы уже зарегистрированы на эту игру в роли мастера");
+                message.setText(String.format("Вы уже зарегистрированы на игру \"%s\" в роли мастера",
+                        gameEventService.getGameById(gameID).getName()));
             }
-            else message.setText("Вы уже зарегистрированы на эту игру в роли игрока");
+            else message.setText(String.format("Вы уже зарегистрированы на игру \"%s\" в роли игрока",
+                    gameEventService.getGameById(gameID).getName()));
         }
         else {
             eventRegistrationService.addNewRegistration(eventRegistration);
-            message.setText("Вы успешно зарегистрированы на эту игру!");
+            message.setText(String.format("Вы успешно зарегистрированы на игру \"%s\"!",
+                    gameEventService.getGameById(gameID).getName()));
         }
 
         return message;
