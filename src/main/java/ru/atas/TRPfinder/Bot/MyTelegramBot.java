@@ -13,10 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.atas.TRPfinder.Bot.Commands.*;
-import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.AllGamesCallback;
-import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.GameInfoCallback;
-import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.NewGameCallback;
-import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.RegisterToGameCallback;
+import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.*;
 import ru.atas.TRPfinder.Bot.Interfaces.CommandInterface;
 import ru.atas.TRPfinder.Bot.Interfaces.EventCallbackInterface;
 import ru.atas.TRPfinder.Services.EventRegistrationService;
@@ -70,7 +67,8 @@ public class MyTelegramBot extends TelegramLongPollingBot {
 
         eventMenuButtons = new HashMap<>();
         eventMenuButtons.put("newGame", new NewGameCallback());
-        eventMenuButtons.put("seeGames", new AllGamesCallback(gameEventService));
+        eventMenuButtons.put("allGames", new AllGamesCallback(gameEventService));
+        eventMenuButtons.put("myGames", new MyGamesCallback(eventRegistrationService, gameEventService));
 
         secondStageButtons = new HashMap<>();
         secondStageButtons.put("prev", new AllGamesCallback(gameEventService));

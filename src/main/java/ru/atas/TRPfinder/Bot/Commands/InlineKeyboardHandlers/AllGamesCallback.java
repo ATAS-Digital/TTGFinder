@@ -58,7 +58,8 @@ public class AllGamesCallback implements EventCallbackInterface {
                 builder.append(String.format("""
                     %s
                     [ %s ]
-                    "%s"\n
+                    "%s"
+                    
                     """, gamesList.get(i).getName(), gamesList.get(i).getDate()
                                 .format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
                         gamesList.get(i).getDescription()));
@@ -79,7 +80,8 @@ public class AllGamesCallback implements EventCallbackInterface {
                 builder.append(String.format("""
                     %s
                     [ %s ]
-                    "%s"\n
+                    "%s"
+                    
                     """, gamesList.get(i).getName(), gamesList.get(i).getDate()
                                 .format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
                         gamesList.get(i).getDescription()));
@@ -133,7 +135,8 @@ public class AllGamesCallback implements EventCallbackInterface {
                 builder.append(String.format("""
                     %s
                     [ %s ]
-                    "%s"\n
+                    "%s"
+                    
                     """, gamesList.get(index).getName(), gamesList.get(index).getDate()
                                 .format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
                         gamesList.get(i).getDescription()));
@@ -155,7 +158,8 @@ public class AllGamesCallback implements EventCallbackInterface {
                 builder.append(String.format("""
                     %s
                     [ %s ]
-                    "%s"\n
+                    "%s"
+                    
                     """, gamesList.get(index).getName(), gamesList.get(index).getDate()
                                 .format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
                         gamesList.get(index).getDescription()));
@@ -166,7 +170,6 @@ public class AllGamesCallback implements EventCallbackInterface {
                 List<InlineKeyboardButton> rowInLine = new ArrayList<>();
                 rowInLine.add(gameButton);
                 rowsInLine.add(rowInLine);
-
 
             }
             additionalIterations = 0;
@@ -228,7 +231,8 @@ public class AllGamesCallback implements EventCallbackInterface {
                 builder.append(String.format("""
                     %s
                     [ %s ]
-                    "%s"\n
+                    "%s"
+                    
                     """, gamesList.get(i).getName(), gamesList.get(i).getDate()
                                 .format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
                         gamesList.get(i).getDescription()));
@@ -249,7 +253,8 @@ public class AllGamesCallback implements EventCallbackInterface {
                 builder.append(String.format("""
                     %s
                     [ %s ]
-                    "%s"\n
+                    "%s"
+                    
                     """, gamesList.get(i).getName(), gamesList.get(i).getDate()
                                 .format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
                         gamesList.get(i).getDescription()));

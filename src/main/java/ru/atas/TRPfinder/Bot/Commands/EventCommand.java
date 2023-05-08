@@ -37,7 +37,7 @@ public class EventCommand implements CommandInterface {
 
         var seeGames = new InlineKeyboardButton();
         seeGames.setText("Список игр");
-        seeGames.setCallbackData("seeGames");
+        seeGames.setCallbackData("allGames");
         firstRowInLine.add(seeGames);
 
         rowsInLine.add(firstRowInLine);
