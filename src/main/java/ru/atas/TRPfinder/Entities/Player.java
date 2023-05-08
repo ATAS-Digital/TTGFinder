@@ -15,7 +15,6 @@ public class Player {
 
     }
 
-    @Autowired
     public Player(Long id, String player_name){
         this.id = id;
         this.player_name = player_name;

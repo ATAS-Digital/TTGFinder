@@ -7,8 +7,8 @@ import ru.atas.TRPfinder.Repositories.PlayerRepository;
 import ru.atas.TRPfinder.Records.PlayerRecord;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class PlayerService {
@@ -26,8 +26,13 @@ public class PlayerService {
     }
 
     public Player getPlayerById(Long id){
-        var a = playerRepository.findById(id);
-        return a.get();
+        try{
+            var a = playerRepository.findById(id);
+            return a.get();
+        }
+        catch (NoSuchElementException ex){
+            return null;
+        }
     }
 
     public boolean addPlayer(PlayerRecord player){

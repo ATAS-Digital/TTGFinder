@@ -45,11 +45,18 @@ public class GameEventService {
         return gameEventRepository.findById(id).get();
     }
 
+    public boolean addNewGame(GameEventRecord game) {
+        if (getAllGames()
+                .stream()
+                .noneMatch(x -> game.name().equals(x.getName()))) {
+            gameEventRepository.addNewGame(game.date(), game.name(), game.place(), game.description());
+            return true;
+        }
+        return false;
+    }
+
     public GameEvent getGameByName(String name){
         return gameEventRepository.getGameByName(name);
-    }
-    public void addNewGame(GameEventRecord game){
-        gameEventRepository.addNewGame(game.date(), game.name(), game.place(), game.description());
     }
 
     public void updateGame(GameEvent game){

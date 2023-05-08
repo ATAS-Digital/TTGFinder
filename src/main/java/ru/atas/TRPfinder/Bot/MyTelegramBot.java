@@ -5,16 +5,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.atas.TRPfinder.Entities.Player;
-import ru.atas.TRPfinder.Records.PlayerRecord;
+import ru.atas.TRPfinder.Bot.Commands.*;
+import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.*;
+import ru.atas.TRPfinder.Bot.Interfaces.CommandInterface;
+import ru.atas.TRPfinder.Bot.Interfaces.EventCallbackInterface;
+import ru.atas.TRPfinder.Services.EventRegistrationService;
+import ru.atas.TRPfinder.Services.GameEventService;
 import ru.atas.TRPfinder.Services.PlayerService;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.HashMap;
 
 @Component
 public class MyTelegramBot extends TelegramLongPollingBot {
@@ -22,14 +28,53 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     @Autowired
     private PlayerService playerService;
 
+    @Autowired
+    private GameEventService gameEventService;
+
+    @Autowired
+    private EventRegistrationService eventRegistrationService;
+
+    private HashMap<String, CommandInterface> commandInterfaceMap;
+    private HashMap<String, EventCallbackInterface> eventMenuButtons;
+    private HashMap<String, EventCallbackInterface> secondStageButtons;
+
+    TelegramBotsApi botApi;
+
+    private boolean newGamePressed;
+    //private boolean gameSelectedForTheFirstTime;
+
     @PostConstruct
     public void registerBot() {
+//        TelegramBotsApi botApi;
         try {
-            TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(this);
+            botApi = new TelegramBotsApi(DefaultBotSession.class);
+            botApi.registerBot(this);
         } catch (TelegramApiException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage()+"\n---------\n");
         }
+
+        newGamePressed = false;
+        //gameSelectedForTheFirstTime = false;
+
+        commandInterfaceMap = new HashMap<>();
+        commandInterfaceMap.put("other", new DefaultAnswer());
+        //commandInterfaceMap.put("otherCallback", new DefaultAnswer());
+        commandInterfaceMap.put("/start", new StartCommand());
+        commandInterfaceMap.put("/login", new LoginCommand(playerService));
+        commandInterfaceMap.put("/profile", new ProfileCommand(playerService));
+        commandInterfaceMap.put("/events", new EventCommand());
+        commandInterfaceMap.put("getTimeData", new TimeData(gameEventService, eventRegistrationService, playerService));
+
+        eventMenuButtons = new HashMap<>();
+        eventMenuButtons.put("newGame", new NewGameCallback());
+        eventMenuButtons.put("allGames", new AllGamesCallback(gameEventService));
+        eventMenuButtons.put("myGames", new MyGamesCallback(eventRegistrationService, gameEventService));
+
+        secondStageButtons = new HashMap<>();
+        secondStageButtons.put("prev", new AllGamesCallback(gameEventService));
+        secondStageButtons.put("next", new AllGamesCallback(gameEventService));
+        secondStageButtons.put("game", new GameInfoCallback(gameEventService));
+        secondStageButtons.put("signUp", new RegisterToGameCallback(playerService, eventRegistrationService, gameEventService));
     }
 
     @Override
@@ -37,103 +82,72 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
 
             String messageText = update.getMessage().getText();
-            long chatId = update.getMessage().getChatId();
-            String firstName = update.getMessage().getChat().getFirstName();
 
-            StringBuilder sb;
-            sb = new StringBuilder(update.getMessage().getChat().getUserName() + ": " + messageText);
+            System.out.println(update.getMessage().getChat().getUserName() + ": " + messageText);
 
-            System.out.println(sb.toString());
+            if (commandInterfaceMap.containsKey(messageText)) {
+                executeMessage(commandInterfaceMap.get(messageText).doAction(update));
+            }
+            else if (update.getMessage().getText().contains("UTC") && newGamePressed){
+                executeMessage(commandInterfaceMap.get("getTimeData").doAction(update));
+                newGamePressed = false;
+            }
+            else {
+                executeMessage(commandInterfaceMap.get("other").doAction(update));
+            }
 
-            switch (messageText) {
-                case "/start":
-                    startCommand(chatId, firstName);
-                    break;
-                case "/players":
-                    getPlayersCommand(chatId);
-                    break;
-                case "/login":
-                    getLogin(update, chatId);
-                    break;
-                case "/profile":
-                    getUserData(chatId);
-                    break;
-                default:
-                    sendDefaultMessage(chatId);
+        }
+        else if (update.hasCallbackQuery()) {
+            String callData = update.getCallbackQuery().getData();
+            System.out.println(update.getCallbackQuery().getMessage().getChat().getUserName() + " (callback): " + callData);
+            if (eventMenuButtons.containsKey(callData)) {
+                executeMessage(eventMenuButtons.get(callData).sendMessage(update));
+                answerCallback(eventMenuButtons.get(callData).answerCallback(update));
+                if (callData.equals("newGame")) newGamePressed = true;
+            }
+            else if(callData.contains("signUp")){
+                answerCallback(secondStageButtons.get("signUp").answerCallback(update));
+            }
+            else if(callData.contains("game")) {
+                executeMessage(secondStageButtons.get("game").sendMessage(update));
+            }
+            else if (secondStageButtons.containsKey(callData))
+                executeEditMessage(secondStageButtons.get(callData).editMessage(update));
+            else if (callData.equals("close")) {
+                deleteMessage(secondStageButtons.get("game").deleteMessage(update));
+                //gameSelectedForTheFirstTime = false;
             }
         }
     }
 
-    private void getUserData(long chatId) {
-        var player = playerService.getPlayerById(chatId);
-
-        String text = "Ваши данные:" + "\n\n" +
-                "name: " + player.getName() + "\n" +
-                "id: " + player.getId();
-
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText(text);
-        executeMessage(message);
-    }
-
-    private void getLogin(Update update, long chatId) {
-        String name =update.getMessage().getChat().getFirstName();
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-
-        var playerRecord = new PlayerRecord(
-                chatId,
-                name);
-
-        if (playerService.addPlayer(playerRecord)) {
-            message.setText("Вы успешно зарегистрированы. Ваш никнейм: " + name);
-        }
-        else {
-            message.setText("Вы уже зарегистрированы под никнеймом: " + name);
-        }
-        executeMessage(message);
-    }
-
-    private void getPlayersCommand(long chatId) {
-        SendMessage message = new SendMessage();
-        List<Player> players = playerService.getPlayers().stream().toList();
-        StringBuilder text = new StringBuilder();
-
-        text.append("Список игроков:" + "\n\n");
-        for (int i = 0; i < players.size(); i++) {
-            text.append("\t* Игрок" + " №" + (i + 1) + ": " + players.get(i).toString());
-            text.append("\n");
-        }
-        message.setChatId(chatId);
-        message.setText(text.toString());
-
-        executeMessage(message);
-    }
-
-    private void sendDefaultMessage(long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText("Извините, я не знаю такой команды. :(\n\nПопробуйте написать команду из доступных.");
-        executeMessage(message);
-    }
-
-    private void startCommand(long chatId, String name) {
-        String answer = "Привет, " + name + "! Рады с тобой познакомится!!";
-        sendMessage(answer, chatId);
-    }
-
-    private void sendMessage(String answer, long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setText(answer);
-        executeMessage(message);
-    }
-
-    private void executeMessage(SendMessage message) {
+    public void executeEditMessage(EditMessageText message) {
         try {
             execute(message);
         } catch (TelegramApiException e) {
+            System.out.println("ERROR! " + "Ошибка при отправке сообщения: " + e.getMessage());
+        }
+    }
+
+    public void executeMessage(SendMessage message) {
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            System.out.println("ERROR! " + "Ошибка при отправке сообщения: " + e.getMessage());
+        }
+    }
+
+    public void deleteMessage(DeleteMessage message){
+        try {
+            execute(message);
+        } catch (TelegramApiException e){
+            System.out.println("ERROR! " + "Ошибка при отправке сообщения: " + e.getMessage());
+        }
+    }
+
+    public void answerCallback(AnswerCallbackQuery answer){
+        try {
+            execute(answer);
+        } catch (TelegramApiException e){
             System.out.println("ERROR! " + "Ошибка при отправке сообщения: " + e.getMessage());
         }
     }
