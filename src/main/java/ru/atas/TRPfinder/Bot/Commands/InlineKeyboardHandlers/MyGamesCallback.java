@@ -73,6 +73,8 @@ public class MyGamesCallback implements EventCallbackInterface {
         var str = builder.toString().replace("!", "\\!")
                 .replace("@", "\\@")
                 .replace("_", "\\_")
+                .replace("-", "\\-")
+                .replace("=", "\\=")
                 .replace("&", "\\&");
 
         message.setText(str);
