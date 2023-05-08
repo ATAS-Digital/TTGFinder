@@ -15,6 +15,7 @@ import ru.atas.TRPfinder.Bot.Commands.*;
 import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.AllGamesCallback;
 import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.GameInfoCallback;
 import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.NewGameCallback;
+import ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers.RegisterToGameCallback;
 import ru.atas.TRPfinder.Bot.Interfaces.CommandInterface;
 import ru.atas.TRPfinder.Bot.Interfaces.EventCallbackInterface;
 import ru.atas.TRPfinder.Services.EventRegistrationService;
@@ -73,6 +74,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         secondStageButtons.put("prev", new AllGamesCallback(gameEventService));
         secondStageButtons.put("next", new AllGamesCallback(gameEventService));
         secondStageButtons.put("game", new GameInfoCallback(gameEventService));
+        secondStageButtons.put("signUp", new RegisterToGameCallback(playerService, eventRegistrationService, gameEventService));
     }
 
     @Override
@@ -102,22 +104,17 @@ public class MyTelegramBot extends TelegramLongPollingBot {
                 executeMessage(eventMenuButtons.get(callData).sendMessage(update));
                 if (callData.equals("newGame")) newGamePressed = true;
             }
+            else if(callData.contains("signUp")){
+                executeMessage(secondStageButtons.get("signUp").sendMessage(update));
+            }
+            else if(callData.contains("game")) {
+                executeMessage(secondStageButtons.get("game").sendMessage(update));
+            }
             else if (secondStageButtons.containsKey(callData))
                 executeEditMessage(secondStageButtons.get(callData).editMessage(update));
             else if (callData.equals("close")) {
                 deleteMessage(secondStageButtons.get("game").deleteMessage(update));
                 //gameSelectedForTheFirstTime = false;
-            }
-            else if(callData.contains("game")) {
-                executeMessage(secondStageButtons.get("game").sendMessage(update));
-//                if(!gameSelectedForTheFirstTime) {
-//                    executeMessage(secondStageButtons.get("game").sendMessage(update));
-//                    //executeEditMessage(secondStageButtons.get("game").editMessage(update));
-//                    gameSelectedForTheFirstTime = true;
-//                }
-//                else {
-//                    executeEditMessage(secondStageButtons.get("game").editMessage(update));
-//                }
             }
         }
     }

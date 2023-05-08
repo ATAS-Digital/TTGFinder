@@ -1,5 +1,6 @@
 package ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers;
 
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class GameInfoCallback implements EventCallbackInterface {
 
     private final GameEventService gameEventService;
@@ -21,6 +23,7 @@ public class GameInfoCallback implements EventCallbackInterface {
         this.gameEventService = gameEventService;
     }
 
+    // здесь пока не используется
     @Override
     public EditMessageText editMessage(Update update) {
         EditMessageText editedMessage = new EditMessageText();
@@ -52,7 +55,7 @@ public class GameInfoCallback implements EventCallbackInterface {
 
         var registerButton = new InlineKeyboardButton();
         registerButton.setText("Записаться");
-        registerButton.setCallbackData("sign up");
+        registerButton.setCallbackData(String.format("signUp %s", gameID));
         List<InlineKeyboardButton> firstLine = new ArrayList<>();
         firstLine.add(registerButton);
         rowsInLine.add(firstLine);
@@ -106,7 +109,7 @@ public class GameInfoCallback implements EventCallbackInterface {
 
         var registerButton = new InlineKeyboardButton();
         registerButton.setText("Записаться");
-        registerButton.setCallbackData("sign up");
+        registerButton.setCallbackData(String.format("signUp %s", gameID));
         List<InlineKeyboardButton> firstLine = new ArrayList<>();
         firstLine.add(registerButton);
         rowsInLine.add(firstLine);
