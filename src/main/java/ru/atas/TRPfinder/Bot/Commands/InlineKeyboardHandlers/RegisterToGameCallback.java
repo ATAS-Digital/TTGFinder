@@ -1,6 +1,7 @@
 package ru.atas.TRPfinder.Bot.Commands.InlineKeyboardHandlers;
 
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -33,11 +34,12 @@ public class RegisterToGameCallback implements EventCallbackInterface {
     }
 
     @Override
-    public SendMessage sendMessage(Update update) {
-        long chatId = update.getCallbackQuery().getMessage().getChatId();
-        SendMessage message = new SendMessage();
-        message.setChatId(update.getCallbackQuery().getMessage().getChatId());
+    public AnswerCallbackQuery answerCallback(Update update){
+        AnswerCallbackQuery answer = new AnswerCallbackQuery();
+        answer.setCallbackQueryId(update.getCallbackQuery().getId());
+        answer.setShowAlert(true);
 
+        long chatId = update.getCallbackQuery().getMessage().getChatId();
         long gameID = Long.parseLong(update.getCallbackQuery().getData().substring(7));
 
         EventRegistration eventRegistration = new EventRegistration(
@@ -47,7 +49,7 @@ public class RegisterToGameCallback implements EventCallbackInterface {
         );
 
         if (playerService.getPlayerById(chatId) == null){
-            message.setText("Сначала зарегистрируйтесь, прежде чем записываться на игры");
+            answer.setText("Сначала зарегистрируйтесь, прежде чем записываться на игры");
         }
         // проверка, зарегистрирован ли пользователь уже на это событие
         else if (eventRegistrationService.getRegistrationsOnGame(gameID).stream().anyMatch(
@@ -55,19 +57,24 @@ public class RegisterToGameCallback implements EventCallbackInterface {
         {
             if (gameEventService.getMasterName(gameID).equals(
                     update.getCallbackQuery().getMessage().getChat().getUserName())){
-                message.setText(String.format("Вы уже зарегистрированы на игру \"%s\" в роли мастера",
+                answer.setText(String.format("Вы уже зарегистрированы на игру \"%s\" в роли мастера",
                         gameEventService.getGameById(gameID).getName()));
             }
-            else message.setText(String.format("Вы уже зарегистрированы на игру \"%s\" в роли игрока",
+            else answer.setText(String.format("Вы уже зарегистрированы на игру \"%s\" в роли игрока",
                     gameEventService.getGameById(gameID).getName()));
         }
         else {
             eventRegistrationService.addNewRegistration(eventRegistration);
-            message.setText(String.format("Вы успешно зарегистрированы на игру \"%s\"!",
+            answer.setText(String.format("Вы успешно зарегистрированы на игру \"%s\"!",
                     gameEventService.getGameById(gameID).getName()));
         }
 
-        return message;
+        return answer;
+    }
+
+    @Override
+    public SendMessage sendMessage(Update update) {
+        return null;
     }
 
     @Override

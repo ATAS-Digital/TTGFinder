@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
@@ -103,10 +104,11 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             System.out.println(update.getCallbackQuery().getMessage().getChat().getUserName() + " (callback): " + callData);
             if (eventMenuButtons.containsKey(callData)) {
                 executeMessage(eventMenuButtons.get(callData).sendMessage(update));
+                answerCallback(eventMenuButtons.get(callData).answerCallback(update));
                 if (callData.equals("newGame")) newGamePressed = true;
             }
             else if(callData.contains("signUp")){
-                executeMessage(secondStageButtons.get("signUp").sendMessage(update));
+                answerCallback(secondStageButtons.get("signUp").answerCallback(update));
             }
             else if(callData.contains("game")) {
                 executeMessage(secondStageButtons.get("game").sendMessage(update));
@@ -139,6 +141,14 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     public void deleteMessage(DeleteMessage message){
         try {
             execute(message);
+        } catch (TelegramApiException e){
+            System.out.println("ERROR! " + "Ошибка при отправке сообщения: " + e.getMessage());
+        }
+    }
+
+    public void answerCallback(AnswerCallbackQuery answer){
+        try {
+            execute(answer);
         } catch (TelegramApiException e){
             System.out.println("ERROR! " + "Ошибка при отправке сообщения: " + e.getMessage());
         }
