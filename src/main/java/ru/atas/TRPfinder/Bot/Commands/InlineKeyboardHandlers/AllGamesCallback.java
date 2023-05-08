@@ -170,14 +170,13 @@ public class AllGamesCallback implements EventCallbackInterface {
                 List<InlineKeyboardButton> rowInLine = new ArrayList<>();
                 rowInLine.add(gameButton);
                 rowsInLine.add(rowInLine);
-
             }
             additionalIterations = 0;
             editedMessage.setText(builder.toString());
         }
 
         var prevButton = new InlineKeyboardButton();
-        prevButton.setText("[назад]");
+        prevButton.setText("[к началу]");
         prevButton.setCallbackData("prev");
         bottomRowsInLine.add(prevButton);
 
