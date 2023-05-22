@@ -8,16 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class Player {
     @Id
     private Long id;
-
-    private String player_name;
+    @Column(name = "player_name")
+    private String playerName;
 
     public Player(){
 
     }
 
-    public Player(Long id, String player_name){
+    public Player(Long id, String playerName){
         this.id = id;
-        this.player_name = player_name;
+        this.playerName = playerName;
     }
 
     public Long getId() {
@@ -25,6 +25,6 @@ public class Player {
     }
 
     public String getName() {
-        return player_name;
+        return playerName;
     }
 }

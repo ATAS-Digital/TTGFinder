@@ -26,4 +26,6 @@ public interface EventRegistrationRepository extends CrudRepository<EventRegistr
     @Query(value = "SELECT * FROM EVENT_REGISTRATIONS\n" +
             "WHERE game_id = (?1)", nativeQuery = true)
     List<EventRegistration> GetGameRegistrations(Long gameId);
+
+    List<EventRegistration> findAllByGameId(Long gameId);
 }

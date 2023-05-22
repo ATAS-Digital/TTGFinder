@@ -26,6 +26,11 @@ public class EventRegistrationController {
         return eventRegistrationService.getAll();
     }
 
+    @GetMapping("/registrations/game/{gameId}")
+    public List<EventRegistration> getAllGames(@PathVariable Long gameId){
+        return eventRegistrationService.getRegistrationsOnGame(gameId);
+    }
+
     @GetMapping("/registrations/roles")
     public List<Role> getAllRoles(){
         return eventRegistrationService.getAllRoles();

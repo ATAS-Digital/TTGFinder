@@ -1,9 +1,6 @@
 package ru.atas.TRPfinder.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.ZonedDateTime;
 
@@ -14,22 +11,26 @@ public class GameEvent {
     @GeneratedValue
     Long id;
 
-    ZonedDateTime game_date;
+    @Column(name = "game_date")
+    ZonedDateTime gameDate;
 
-    String game_name;
+    @Column(name = "game_name")
+    String gameName;
 
-    String game_place;
+    @Column(name = "game_place")
+    String gamePlace;
 
+    @Column(name = "description")
     String description;
 
     public GameEvent(){}
 
-    public GameEvent(Long id, ZonedDateTime game_date, String game_name, String game_place, String description){
+    public GameEvent(Long id, ZonedDateTime gameDate, String gameName, String gamePlace, String description){
         this.id = id;
-        this.game_date = game_date;
-        this.game_name = game_name;
+        this.gameDate = gameDate;
+        this.gameName = gameName;
         this.description = description;
-        this.game_place =  game_place;
+        this.gamePlace =  gamePlace;
     }
 
     public Long getId() {
@@ -37,14 +38,14 @@ public class GameEvent {
     }
 
     public ZonedDateTime getDate() {
-        return game_date;
+        return gameDate;
     }
 
     public String getName() {
-        return game_name;
+        return gameName;
     }
 
-    public String getGamePlace() {return game_place;}
+    public String getGamePlace() {return gamePlace;}
 
     public String getDescription() {
         return description;

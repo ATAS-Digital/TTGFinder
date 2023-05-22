@@ -66,4 +66,8 @@ public class GameEventService {
     public void deleteGameById(Long id){
         gameEventRepository.deleteById(id);
     }
+
+    public int getDoubledValue(int val){
+        return val*2;
+    }
 }
