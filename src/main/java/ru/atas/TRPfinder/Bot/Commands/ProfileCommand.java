@@ -25,9 +25,10 @@ public class ProfileCommand implements CommandInterface {
         long chatId = update.getMessage().getChatId();
         try {
             var player = playerService.getPlayerById(chatId);
-            text = "Ваши данные:" + "\n\n" +
-                    "name: " + player.getName() + "\n" +
-                    "id: " + player.getId();
+            text = "Ваш никнейм: " + player.getName();
+//            text = "Ваши данные:" + "\n\n" +
+//                    "name: " + player.getName() + "\n" +
+//                    "id: " + player.getId();
         } catch (NoSuchElementException e) {
             System.out.println("ERROR!! Запись не найдена в БД: " + e.getMessage());
             text = "Вы ещё не зарегистрировались :)";

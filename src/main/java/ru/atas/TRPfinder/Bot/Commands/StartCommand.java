@@ -12,7 +12,11 @@ public class StartCommand implements CommandInterface {
     public SendMessage doAction(Update update) {
         long chatId = update.getMessage().getChatId();
         String name = update.getMessage().getChat().getFirstName();
-        String answer = "Привет, " + name + "! Рады с тобой познакомится!!";
+        String answer = "Привет, " + name + "! Рады с тобой познакомится!!\n\n" +
+                "Этот бот позволит тебе:\n" +
+                "1) найти партию для игры в НРИ, если ты игрок\n" +
+                "2) найти игроков себе на игру, если ты мастер ;)\n\n" +
+                "Регистрируйся через /login, пиши команду /events и исследуй возможности бота!";
 
         var message = new SendMessage();
         message.setChatId(chatId);
