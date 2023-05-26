@@ -38,22 +38,20 @@ public class AllGamesCallback implements EventCallbackInterface {
     }
 
     private EditMessageText editMessagePREV(Update update, List<GameEvent> gamesList) {
-        //gamesList = gameEventService.getAllGames();
         size = gamesList.size();
         iterations = size / 5;
         additionalIterations = size % 5;
+
+        builder = new StringBuilder();
+        keyboard = new InlineKeyboardMarkup();
+        rowsInLine = new ArrayList<>();
+        bottomRowsInLine = new ArrayList<>();
 
         EditMessageText editedMessage = new EditMessageText();
         editedMessage.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
         editedMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
 
-        var keyboard = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
-        List<InlineKeyboardButton> bottomRowsInLine = new ArrayList<>();
-
-        builder = new StringBuilder();
-
-        if (size >= 5) {
+        if(size >= 5){
             for(int i = 0; i < 5; i++){
                 builder.append(String.format("""
                     %s
@@ -75,7 +73,7 @@ public class AllGamesCallback implements EventCallbackInterface {
             iterations -= 1;
             lastIndexOfIterations = 5;
         }
-        else{
+        else {
             for(int i = 0; i < size; i++){
                 builder.append(String.format("""
                     %s
@@ -98,15 +96,16 @@ public class AllGamesCallback implements EventCallbackInterface {
 
         if (lastIndexOfIterations / 5 > 1){
             var prevButton = new InlineKeyboardButton();
-            prevButton.setText("[дальше]");
-            prevButton.setCallbackData("next");
+            prevButton.setText("[к началу]");
+            prevButton.setCallbackData("prev");
             bottomRowsInLine.add(prevButton);
-            rowsInLine.add(bottomRowsInLine);
         }
+
         var nextButton = new InlineKeyboardButton();
         nextButton.setText("[дальше]");
         nextButton.setCallbackData("next");
         bottomRowsInLine.add(nextButton);
+
         rowsInLine.add(bottomRowsInLine);
 
         keyboard.setKeyboard(rowsInLine);
@@ -116,12 +115,14 @@ public class AllGamesCallback implements EventCallbackInterface {
     }
 
     private EditMessageText editMessageNEXT(Update update, List<GameEvent> gamesList) {
-        //gamesList = gameEventService.getAllGames();
-        int size = gamesList.size();
+        size = gamesList.size();
+
         additionalIterations = size % 5;
+
+        builder = new StringBuilder();
+        keyboard = new InlineKeyboardMarkup();
         rowsInLine = new ArrayList<>();
         bottomRowsInLine = new ArrayList<>();
-        builder = new StringBuilder();
 
         EditMessageText editedMessage = new EditMessageText();
         editedMessage.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
@@ -139,7 +140,7 @@ public class AllGamesCallback implements EventCallbackInterface {
                     
                     """, gamesList.get(index).getName(), gamesList.get(index).getDate()
                                 .format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
-                        gamesList.get(i).getDescription()));
+                        gamesList.get(index).getDescription()));
 
                 var gameButton = new InlineKeyboardButton();
                 gameButton.setText(gamesList.get(index).getName());
@@ -186,6 +187,7 @@ public class AllGamesCallback implements EventCallbackInterface {
             nextButton.setCallbackData("next");
             bottomRowsInLine.add(nextButton);
         }
+
         rowsInLine.add(bottomRowsInLine);
 
         keyboard.setKeyboard(rowsInLine);
@@ -216,14 +218,13 @@ public class AllGamesCallback implements EventCallbackInterface {
         iterations = size / 5;
         additionalIterations = size % 5;
 
+        builder = new StringBuilder();
+        keyboard = new InlineKeyboardMarkup();
+        rowsInLine = new ArrayList<>();
+        bottomRowsInLine = new ArrayList<>();
+
         SendMessage message = new SendMessage();
         message.setChatId(update.getCallbackQuery().getMessage().getChatId());
-
-        var keyboard = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
-        List<InlineKeyboardButton> bottomRowsInLine = new ArrayList<>();
-
-        builder = new StringBuilder();
 
         if (size >= 5) {
             for(int i = 0; i < 5; i++){
