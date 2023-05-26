@@ -15,15 +15,15 @@ import java.util.stream.*;
 @Service
 public class GameEventService {
     private final GameEventRepository gameEventRepository;
-    private final EventRegistrationRepository eventRegistrationRepository;
+    private final EventRegistrationService eventRegistrationService;
     private final PlayerRepository playerRepository;
 
     @Autowired
     public GameEventService(GameEventRepository gameEventRepository,
-                            EventRegistrationRepository eventRegistrationRepository,
+                            EventRegistrationService eventRegistrationService,
                             PlayerRepository playerRepository){
         this.gameEventRepository = gameEventRepository;
-        this.eventRegistrationRepository = eventRegistrationRepository;
+        this.eventRegistrationService = eventRegistrationService;
         this.playerRepository = playerRepository;
     }
 
@@ -34,7 +34,7 @@ public class GameEventService {
     }
 
     public String getMasterName(Long gameId){
-        var masterId = eventRegistrationRepository.GetGameRegistrations(gameId)
+        var masterId = eventRegistrationService.getRegistrationsOnGame(gameId)
                 .stream()
                 .filter(x -> x.getRole() == Role.master)
                 .toList().get(0).getPlayerId();
@@ -64,6 +64,7 @@ public class GameEventService {
     }
 
     public void deleteGameById(Long id){
+        eventRegistrationService.deleteRegistrationsOnGame(id);
         gameEventRepository.deleteById(id);
     }
 

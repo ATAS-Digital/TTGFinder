@@ -36,9 +36,8 @@ public class EventRegistrationService{
 
     public void deleteRegistrationsOnGame(Long gameId){
         var registrations = getRegistrationsOnGame(gameId);
-        for (var el : registrations) {
-            eventRegistrationRepository.deleteById(el.getId());
-        }
+        var ids = registrations.stream().map(x -> x.getId()).toList();
+        eventRegistrationRepository.deleteAllById(ids);
     }
 
     public List<Role> getAllRoles(){
