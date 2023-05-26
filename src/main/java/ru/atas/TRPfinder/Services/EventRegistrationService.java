@@ -31,7 +31,13 @@ public class EventRegistrationService{
     }
 
     public List<EventRegistration> getRegistrationsOnGame(Long gameId){
-        return eventRegistrationRepository.GetGameRegistrations(gameId);
+        return eventRegistrationRepository.findAllByGameId(gameId);
+    }
+
+    public void deleteRegistrationsOnGame(Long gameId){
+        var registrations = getRegistrationsOnGame(gameId);
+        var ids = registrations.stream().map(x -> x.getId()).toList();
+        eventRegistrationRepository.deleteAllById(ids);
     }
 
     public List<Role> getAllRoles(){

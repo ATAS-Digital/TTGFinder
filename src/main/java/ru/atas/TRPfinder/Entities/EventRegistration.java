@@ -1,9 +1,6 @@
 package ru.atas.TRPfinder.Entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 
 @Entity
@@ -11,27 +8,29 @@ import jakarta.persistence.Table;
 @IdClass(EventRegistrationId.class)
 public class EventRegistration {
     @Id
-    private Long player_id;
+    @Column(name = "player_id")
+    private Long playerId;
     @Id
-    private Long game_id;
+    @Column(name = "game_id")
+    private Long gameId;
     private String role;
 
     public EventRegistration(){
     }
 
     public EventRegistration(Long player_id, Long game_id, String role){
-        this.player_id = player_id;
-        this.game_id = game_id;
+        this.playerId = player_id;
+        this.gameId = game_id;
         System.out.println(Role.valueOf(role));
         this.role = role;
     }
 
     public Long getPlayerId() {
-        return player_id;
+        return playerId;
     }
 
     public Long getGameId() {
-        return game_id;
+        return gameId;
     }
 
     public Role getRole() {
@@ -43,6 +42,6 @@ public class EventRegistration {
     }
 
     public EventRegistrationId getId(){
-        return new EventRegistrationId(player_id, game_id);
+        return new EventRegistrationId(playerId, gameId);
     }
 }
