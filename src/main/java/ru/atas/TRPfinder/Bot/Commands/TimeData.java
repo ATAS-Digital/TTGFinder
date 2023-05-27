@@ -60,7 +60,6 @@ public class TimeData implements CommandInterface {
                     message.setText("Ваша игра успешно добавлена!");
                     EventRegistration eventRegistration = new EventRegistration(
                             chatID,
-                            //gameEventService.getGameById((long) gameEventService.getAllGames().size() - 1L).getId() + 1,
                             gameEventService.getGameByName(gameEventRecord.name()).getId(),
                             "master"
                     );
