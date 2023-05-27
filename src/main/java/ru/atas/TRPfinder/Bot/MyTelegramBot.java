@@ -41,11 +41,9 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     TelegramBotsApi botApi;
 
     private boolean newGamePressed;
-    //private boolean gameSelectedForTheFirstTime;
 
     @PostConstruct
     public void registerBot() {
-//        TelegramBotsApi botApi;
         try {
             botApi = new TelegramBotsApi(DefaultBotSession.class);
             botApi.registerBot(this);
@@ -54,11 +52,9 @@ public class MyTelegramBot extends TelegramLongPollingBot {
         }
 
         newGamePressed = false;
-        //gameSelectedForTheFirstTime = false;
 
         commandInterfaceMap = new HashMap<>();
         commandInterfaceMap.put("other", new DefaultAnswer());
-        //commandInterfaceMap.put("otherCallback", new DefaultAnswer());
         commandInterfaceMap.put("/start", new StartCommand());
         commandInterfaceMap.put("/login", new LoginCommand(playerService));
         commandInterfaceMap.put("/profile", new ProfileCommand(playerService));
@@ -80,9 +76,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-
             String messageText = update.getMessage().getText();
-
             System.out.println(update.getMessage().getChat().getUserName() + ": " + messageText);
 
             if (commandInterfaceMap.containsKey(messageText)) {
@@ -95,11 +89,12 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             else {
                 executeMessage(commandInterfaceMap.get("other").doAction(update));
             }
-
         }
+
         else if (update.hasCallbackQuery()) {
             String callData = update.getCallbackQuery().getData();
             System.out.println(update.getCallbackQuery().getMessage().getChat().getUserName() + " (callback): " + callData);
+
             if (eventMenuButtons.containsKey(callData)) {
                 executeMessage(eventMenuButtons.get(callData).sendMessage(update));
                 answerCallback(eventMenuButtons.get(callData).answerCallback(update));
@@ -111,11 +106,11 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             else if(callData.contains("game")) {
                 executeMessage(secondStageButtons.get("game").sendMessage(update));
             }
-            else if (secondStageButtons.containsKey(callData))
+            else if (secondStageButtons.containsKey(callData)) {
                 executeEditMessage(secondStageButtons.get(callData).editMessage(update));
+            }
             else if (callData.equals("close")) {
                 deleteMessage(secondStageButtons.get("game").deleteMessage(update));
-                //gameSelectedForTheFirstTime = false;
             }
         }
     }
@@ -162,7 +157,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         // Вынесено в системные переменные
-        //BOT_NAME, TEST_BOT_NAME
+        // BOT_NAME, TEST_BOT_NAME
         return System.getenv("BOT_NAME");
     }
 }

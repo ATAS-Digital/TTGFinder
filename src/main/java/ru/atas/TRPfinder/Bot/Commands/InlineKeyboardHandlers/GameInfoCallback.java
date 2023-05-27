@@ -24,54 +24,9 @@ public class GameInfoCallback implements EventCallbackInterface {
         this.gameEventService = gameEventService;
     }
 
-    // здесь пока не используется
     @Override
     public EditMessageText editMessage(Update update) {
-        EditMessageText editedMessage = new EditMessageText();
-        editedMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
-        editedMessage.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
-
-        String callData = update.getCallbackQuery().getData();
-        long gameID = Long.parseLong(callData.substring(4));
-        var game = gameEventService.getGameById(gameID);
-
-        var text = String.format("""
-                Название: %s
-                
-                Дата и время: %s
-                
-                Описание: %s
-                
-                Контакт мастера: @%s
-                """,
-                game.getName(),
-                game.getDate().format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
-                game.getDescription(),
-                gameEventService.getMasterName(gameID));
-
-        editedMessage.setText(text);
-
-        var keyboard = new InlineKeyboardMarkup();
-        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
-
-        var registerButton = new InlineKeyboardButton();
-        registerButton.setText("Записаться");
-        registerButton.setCallbackData(String.format("signUp %s", gameID));
-        List<InlineKeyboardButton> firstLine = new ArrayList<>();
-        firstLine.add(registerButton);
-        rowsInLine.add(firstLine);
-
-        var closeButton = new InlineKeyboardButton();
-        closeButton.setText("[X] закрыть");
-        closeButton.setCallbackData("close");
-        List<InlineKeyboardButton> secondLine = new ArrayList<>();
-        secondLine.add(closeButton);
-        rowsInLine.add(secondLine);
-
-        keyboard.setKeyboard(rowsInLine);
-        editedMessage.setReplyMarkup(keyboard);
-
-        return editedMessage;
+        return null;
     }
 
     public DeleteMessage deleteMessage(Update update){

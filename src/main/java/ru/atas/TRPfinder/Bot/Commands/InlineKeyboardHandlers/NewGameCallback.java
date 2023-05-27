@@ -34,7 +34,6 @@ public class NewGameCallback implements EventCallbackInterface {
 
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        //newMessage.setMessageId(messageId);
         message.setText(answer);
 
         return message;

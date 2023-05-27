@@ -42,14 +42,7 @@ public class EventCommand implements CommandInterface {
 
         rowsInLine.add(firstRowInLine);
 
-        // сохранил это как backup
-//        var createdGames = new InlineKeyboardButton();
-//        createdGames.setText("Созданные игры");
-//        createdGames.setCallbackData("createdGames");
-//        secondRowInLine.add(createdGames);
-
         var myGames = new InlineKeyboardButton();
-        //myGames.setText("Запланированные игры");
         myGames.setText("Мои игры");
         myGames.setCallbackData("myGames");
         secondRowInLine.add(myGames);
