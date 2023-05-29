@@ -105,6 +105,7 @@ public class MyTelegramBot extends TelegramLongPollingBot {
             }
             else if(callData.contains("game")) {
                 executeMessage(secondStageButtons.get("game").sendMessage(update));
+                answerCallback(secondStageButtons.get("game").answerCallback(update));
             }
             else if (secondStageButtons.containsKey(callData)) {
                 executeEditMessage(secondStageButtons.get(callData).editMessage(update));

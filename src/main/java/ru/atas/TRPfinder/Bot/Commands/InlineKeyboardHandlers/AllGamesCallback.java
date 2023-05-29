@@ -241,7 +241,7 @@ public class AllGamesCallback implements EventCallbackInterface {
             message.setText(builder.toString());
         }
 
-        if (iterations - 1 > 0 || additionalIterations > 0) {
+        if (iterations - 1 > 0 && additionalIterations > 0) {
             var nextButton = new InlineKeyboardButton();
             nextButton.setText("[дальше]");
             nextButton.setCallbackData("next");
