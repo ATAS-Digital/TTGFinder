@@ -53,7 +53,7 @@ public class AllGamesCallback implements EventCallbackInterface {
 
         if(size >= 5){
             for(int i = 0; i < 5; i++){
-                builder.append(getBuilderText(i));
+                builder.append(getBuilderText(gamesList, i));
 
                 var gameButton = new InlineKeyboardButton();
                 gameButton.setText(gamesList.get(i).getName());
@@ -68,7 +68,7 @@ public class AllGamesCallback implements EventCallbackInterface {
         }
         else {
             for(int i = 0; i < size; i++){
-                builder.append(getBuilderText(i));
+                builder.append(getBuilderText(gamesList, i));
 
                 var gameButton = new InlineKeyboardButton();
                 gameButton.setText(gamesList.get(i).getName());
@@ -119,7 +119,7 @@ public class AllGamesCallback implements EventCallbackInterface {
         if(iterations > 0){
             for (int i = 0; i < 5; i++){
                 index = i + lastIndexOfIterations;
-                builder.append(getBuilderText(index));
+                builder.append(getBuilderText(gamesList, i));
 
                 var gameButton = new InlineKeyboardButton();
                 gameButton.setText(gamesList.get(index).getName());
@@ -135,7 +135,7 @@ public class AllGamesCallback implements EventCallbackInterface {
         else {
             for(int i = 0; i < additionalIterations; i++){
                 index = lastIndexOfIterations + i;
-                builder.append(getBuilderText(index));
+                builder.append(getBuilderText(gamesList, i));
 
                 var gameButton = new InlineKeyboardButton();
                 gameButton.setText(gamesList.get(index).getName());
@@ -200,14 +200,7 @@ public class AllGamesCallback implements EventCallbackInterface {
 
         if (size >= 5) {
             for(int i = 0; i < 5; i++){
-                builder.append(String.format("""
-                    %s
-                    [ %s ]
-                    "%s"
-                    
-                    """, gamesList.get(i).getName(), gamesList.get(i).getDate()
-                                .format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
-                        gamesList.get(i).getDescription()));
+                builder.append(getBuilderText(gamesList, i));
 
                 var gameButton = new InlineKeyboardButton();
                 gameButton.setText(gamesList.get(i).getName());
@@ -222,14 +215,7 @@ public class AllGamesCallback implements EventCallbackInterface {
         }
         else{
             for(int i = 0; i < size; i++){
-                builder.append(String.format("""
-                    %s
-                    [ %s ]
-                    "%s"
-                    
-                    """, gamesList.get(i).getName(), gamesList.get(i).getDate()
-                                .format(DateTimeFormatter.ofPattern("dd MMMM yyyy HH:mm z")),
-                        gamesList.get(i).getDescription()));
+                builder.append(getBuilderText(gamesList, i));
 
                 var gameButton = new InlineKeyboardButton();
                 gameButton.setText(gamesList.get(i).getName());
@@ -238,10 +224,11 @@ public class AllGamesCallback implements EventCallbackInterface {
                 rowInLine.add(gameButton);
                 rowsInLine.add(rowInLine);
             }
+            additionalIterations = 0;
             message.setText(builder.toString());
         }
 
-        if (iterations - 1 > 0 && additionalIterations > 0) {
+        if (iterations - 1 > 0 || additionalIterations > 0) {
             var nextButton = new InlineKeyboardButton();
             nextButton.setText("[дальше]");
             nextButton.setCallbackData("next");
@@ -267,7 +254,7 @@ public class AllGamesCallback implements EventCallbackInterface {
         return null;
     }
 
-    private String getBuilderText(int index){
+    private String getBuilderText(List<GameEvent> gamesList, int index){
         return String.format("""
                     %s
                     [ %s ]
